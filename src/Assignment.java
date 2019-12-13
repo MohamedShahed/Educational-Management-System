@@ -49,9 +49,24 @@ public class Assignment implements Serializable {
     }
     public void submitSolution() /**Only student could submit */
     {
-        System.out.println("************enter ur solution*********** ");
-        this.Solution=input.nextLine();
-        this.submitted=true;
+        if(getSubmitionStatus()){
+            System.out.println("you already has solution .... need to update ur solution ?  type  y for yes and n for no ");char ch=input.next().charAt(0);
+            while(ch!='y' && ch!='n'){
+                System.out.println("wrong input try again ");ch=input.next().charAt(0);
+            }
+            if(ch=='y'){
+                System.out.println("************ enter ur new solution *********** ");
+                this.Solution=input.nextLine();
+                this.submitted=true;
+            }
+        }
+        else {
+
+
+            System.out.println("************ enter ur solution *********** ");
+            this.Solution = input.nextLine();
+            this.submitted = true;
+        }
     }
     public boolean getSubmitionStatus()
     {
@@ -59,10 +74,7 @@ public class Assignment implements Serializable {
     }
     public String getSolution()
     {
-        if(this.isSubmitted())
-            return this.Solution;
-        else
-            return "has no solution yet ";
+        return this.Solution;
     }
     public double getStudentGrade()
     {
@@ -74,9 +86,17 @@ public class Assignment implements Serializable {
     }
     public void showInfo()
     {
-        System.out.println("the time will end at  : " +formatter2.format(this.AssignmentTime));
-        System.out.println("Still : " + formatter.format(this.AssignmentTime-this.CreationTime));
+        System.out.print("----------------------------------------------------------\n");
+        if(this.AssignmentTime-this.CreationTime!=0)
+        {
+            System.out.println("the time will end at  : " + formatter2.format(this.AssignmentTime));
+            System.out.println("Still : " + formatter.format(this.AssignmentTime - this.CreationTime));
+        }
+        else
+            System.out.println("the time has ended :(' \n");
+
         System.out.println("the total grade for this assignment is : " + this.TotalGrade);
+        System.out.println("----------------------------------------------------------\n");
 
     }
 

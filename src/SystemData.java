@@ -8,10 +8,11 @@ public class SystemData implements Serializable {
 
     public  Data loadData()/**load all data from file*/
     {
+        Data re=new Data();
         try {
             this.fileStream= new FileInputStream("systemData.ser");
             this.os = new ObjectInputStream(fileStream);
-            Data re=(Data)os.readObject();
+            re=(Data)os.readObject();
             os.close();
             fileStream.close();
             fileStream=null;
@@ -21,7 +22,7 @@ public class SystemData implements Serializable {
             ex.printStackTrace();
         }
         System.out.println("didn't loaded ");
-        return new Data();
+        return null;
     }
 
     public void saveData(Data data)/**save all data in file*/

@@ -117,18 +117,16 @@ public class Doctor implements Serializable {
         data.addCourse(course);
 
     }
-    public void createAssignment(String courseCode, Data data)
+    public void createAssignment(String courseCode)
     {
         System.out.println("Enter the Assignment code : "); String code=input.next();
         System.out.println("Enter the Total grade of this assignment: ");double grade=input.nextDouble();
 
         System.out.println("Enter the number of days : ");int day=input.nextInt();
-        System.out.println("Enter the number of hours : ");int hour=input.nextInt();
+        System.out.println("Enter the number of hours : ");int hours=input.nextInt();
 
-        Assignment ass=new Assignment(code, grade);
-        ass.setAssignmentTime(day, hour);
-        this.MyCourses.get(courseCode).addAssignment(ass);
-        data.updateCourse(MyCourses.get(courseCode));
+        this.MyCourses.get(courseCode).addAssignment(new Assignment(code, grade));
+        this.MyCourses.get(courseCode).getAssignment(code).setAssignmentTime(day, hours);
 
     }
     public void listCourses()
@@ -141,6 +139,8 @@ public class Doctor implements Serializable {
         }
         else
             System.out.println("u have no courses ");
+
+        System.out.println("*****************************************\n");
     }
     public int validateDoctorMenu()
     {
@@ -154,89 +154,101 @@ public class Doctor implements Serializable {
     }
     public void viewCourse(Data data)
     {
-        listCourses();
         int choice1;
         int choice2;
         int choice3;
         Assignment assignment=null;
         Course course=null;
 
-
-        System.out.println("chose a course and type it's code: ");String code=input.next();
-        while(!hasThisCourse(code)){
-            System.out.println("wrong Course code try again ");code=input.next();
+        if(!this.MyCourses.isEmpty())
+        {
+            listCourses();
+            System.out.print("chose a course from above and type the course code:  ");
+            String code = input.next();
+            while (!hasThisCourse(code)) {
+                System.out.println("wrong Course code try again ");
+                code = input.next();
+            }
+            course = this.MyCourses.get(code);
+            course.courseInfo();
         }
-        course=this.MyCourses.get(code);
-        course.courseInfo();
-
+        else
+        {
+            System.out.println("you didn't create any course so far \n");return;
+        }
         while (true)
         {
              choice1=courseViewValidation();
 
             if(choice1==1)course.listAssignments();
-            else if(choice1==2)createAssignment(course.getCode(), data);
+            else if(choice1==2)createAssignment(course.getCode());
             else if(choice1==3)
                 {
                     course.listAssignments();
+                    if(course.getNumberOfAssignments()==0)break;
 
                     System.out.println("Enter the Assignment code : ");String assCode=input.next();
                     while(!course.CourseHasThisAssignment(assCode)){
                         System.out.println("invalid assignment code try again ");assCode=input.next();
                     }
                      assignment=course.getAssignment(assCode);
-                    while (true){
-                        choice2=assignmentViewValidation();
-
-                    if(choice2==1)assignment.showInfo();
-                    else if(choice2==2)course.GradeReportForSpecificAss(assCode);
-                    else if(choice2==3)course.ListSolutionsForSpecificAss(assCode);
-                    if(choice2==4)
-                        {
-                            System.out.println("enter the student ID ");String stuID=input.next();
-                            while(!course.StudentRegisterInThisCourse(stuID)){
-                                System.out.println("Wrong id plz try again ");
-                                stuID=input.next();
+                    while (true) {
+                        choice2 = assignmentViewValidation();
+                        if (choice2 == 1) assignment.showInfo();
+                        else if (choice2 == 2) course.GradeReportForSpecificAss(assCode);
+                        else if (choice2 == 3) course.listSolutionsForAllStudentsInThisAssignment(assCode);
+                        else if (choice2 == 4) {
+                            if (course.thisCourseHasSolutionsInthisAss(assCode) != true || course.hasStudents() == false) {
+                                System.out.println("no solutions yet ): ");
                             }
-                            while(true){
-                                 choice3= validateForSolutionView();
+                            else
+                                {
+                                System.out.println("enter the student ID ");
+                            String stuID = input.next();
+                            while (!course.StudentRegisterInThisCourse(stuID)) {
+                                System.out.println("Wrong id plz try again ");
+                                stuID = input.next();
+                            }
+                            while (true) {
+                                choice3 = validateForSolutionView();
 
-                              if(choice3==1)course.getStudent(stuID).solutionInfo(course.getCode(), stuID);
-                              else if(choice3==2)
-                              {
-                                  System.out.println("set the student grade: ");
-                                  double grade=input.nextDouble();
-                                  while(grade>course.getAssignment(assCode).getTotalGrade()){
-                                      System.out.println("Wrong grade plz enter grade less than or equal the total grade");
-                                      grade=input.nextDouble();
-                                  }
-                                  course.getStudent(stuID).setGrade(course.getCode(), assCode, grade);
-                              }
-                              else if(choice3==3)
-                              {
-                                  System.out.println("type ur comment : ");
-                                  String comment=input.nextLine();
-                                  course.getStudent(stuID).setComment(course.getCode(), assCode, comment);
-                              }
-                              else
-                                  break;
+                                if (choice3 == 1) course.getStudent(stuID).solutionInfo(course.getCode(), assCode);
+                                else if (choice3 == 2) {
+                                    System.out.println("set the student grade: ");
+                                    double grade = input.nextDouble();
+                                    while (grade > course.getAssignment(assCode).getTotalGrade()) {
+                                        System.out.println("Wrong grade plz enter grade less than or equal the total grade");
+                                        grade = input.nextDouble();
+                                    }
+                                    course.getStudent(stuID).setGrade(course.getCode(), assCode, grade);
+                                } else if (choice3 == 3) {
+                                    System.out.println("type ur comment : ");
+                                    String comment = input.nextLine();
+                                    course.getStudent(stuID).setComment(course.getCode(), assCode, comment);
+                                } else
+                                    break;
+                            }
                         }
-                        }
-                    else if(choice2==5){
-                        System.out.println("enter the new grade ");int newGrade=input.nextInt();
-                        course.getAssignment(assCode).updateTotalGrade(newGrade);
-
                     }
-                    else break;
+                        else if(choice2==5)
+                        {
+                            System.out.println("enter the new grade ");int newGrade=input.nextInt();
+                            course.getAssignment(assCode).updateTotalGrade(newGrade);
+                        }
+                        else break;
                     }
                 }
             else break;
         }
-        this.MyCourses.replace(course.getCode(), course);
 
     }
     public void LogOut(Data data)
     {
       data.updateDoctor(this);
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     //public void getStatistics(){}

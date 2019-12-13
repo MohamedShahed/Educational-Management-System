@@ -51,9 +51,8 @@ public class Data implements Serializable {
     public void showAvilableCourses(String id)
     {
         for (String key: courses.keySet()){
-            Course value = courses.get(key);
-            if(!value.StudentRegisterInThisCourse(id))
-                System.out.println(key + " " + value.getName());
+            if(!courses.get(key).StudentRegisterInThisCourse(id))
+                System.out.println(key + " " + courses.get(key).getName());
         }
     }
     public void updateDoctor(Doctor dr){

@@ -6,7 +6,7 @@ public class SystemFlow {
     private Scanner input=new Scanner(System.in);
 
 
-    private void LogMenu()
+    private void loginMenu()
     {
         System.out.println("1) Admin \n" +
                            "2) Doctor \n" +
@@ -15,14 +15,14 @@ public class SystemFlow {
                            "5) Close System");
     }
 
-    private int validateChoice()
+    private int validateLoginMenu()
     {
-        LogMenu();
+        loginMenu();
         int choice=input.nextInt();
         while(choice!=1 && choice!=2 && choice!=3 && choice!=4 && choice!=5)
         {
             System.out.println("Wrong choice ... try again ");
-            LogMenu();
+            loginMenu();
             choice=input.nextInt();
         }
         return choice;
@@ -62,17 +62,20 @@ public class SystemFlow {
     {
 
        this.data=sysData.loadData();
+       assert this.data !=null;
+
 
         boolean status=true;
         while(status)
         {
-            int choice=validateChoice();
+            int choice= validateLoginMenu();
             switch (choice)
             {
                 case 2:
                     System.out.println("enter ur ID plz: ");
                     String drID=validateDoctorID();
                     Doctor dr=this.data.getDoctor(drID);
+                    System.out.println("*********Welcome Dr: "+ dr.getName()+" ***********");
                     int doctorChoice;
                     while(true) {
                         doctorChoice = dr.validateDoctorMenu();

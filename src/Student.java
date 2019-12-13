@@ -124,15 +124,14 @@ public class Student implements Serializable {
         System.out.println("enter the course code: ");
         String courseCode= ValidateCourseCode();
         System.out.println("Course Name: " + this.MyCourses.get(courseCode).getName() + "  Course Code: " + this.MyCourses.get(courseCode).getCode());
-        int choice;
         if(this.MyCourses.get(courseCode).hasAssignments()){
             this.MyCourses.get(courseCode).listAssignmentsForStudents();
-
         }
         else
             System.out.println("you have No assignments in this course ");
+        System.out.println("------------------------------------------------\n");
 
-        choice=validateMenuForViewCourse();
+        int choice=validateMenuForViewCourse();
         String assCode="";
         if(choice==1)
         {
@@ -169,6 +168,7 @@ public class Student implements Serializable {
        String courseCode=validateCourseCode(data);
        this.MyCourses.put(courseCode, data.getCourse(courseCode));
         data.getCourse(courseCode).registerStudent(this);
+        System.out.println("Done\n");
     }
     public void listAllCourses()
     {
@@ -178,6 +178,7 @@ public class Student implements Serializable {
                 String value = MyCourses.get(name).getName();
                 System.out.println(key + " " + value);
             }
+            System.out.println("-----------------------------\n");
         }
         else
             System.out.println("u did't registered in any courses yet...");
@@ -211,13 +212,12 @@ public class Student implements Serializable {
     }
     public void getSolutions(String CourseCode, String assignmentCode)
     {
-        Course course=MyCourses.get(CourseCode);
         System.out.println("student Name: " +this.name + "   ID: "+ this.ID);
+        if(this.MyCourses.get(CourseCode).getAssignment(assignmentCode).getSubmitionStatus())
+            System.out.println("his solution is : \n"+ this.MyCourses.get(CourseCode).getAssignment(assignmentCode).getSolution());
+        else
+            System.out.println("he did't submit his solution yet :)'");
 
-        for(int i=1; i<=course.getNumberOfAssignments(); i++)
-        {
-            System.out.println("\tAss-"+i +"   solution: "+course.getAssignment(assignmentCode).getSolution());
-        }
     }
     public void setGrade(String CourseCode, String assignmentCode, double grade)
     {
@@ -232,6 +232,10 @@ public class Student implements Serializable {
         System.out.println("Student name: "+ this.name+ "his/her ID is : "+ this.ID+ "his/her Email is : "+this.email+
                 "\nhis/her solution is : ");
         this.MyCourses.get(CourseCode).getAssignment(assignmentCode).getSolution();
+    }
+    public boolean hasSolutionInThisAss(String courseCode , String assCode)
+    {
+        return this.MyCourses.get(courseCode).getAssignment(assCode).getSubmitionStatus();
     }
 }
 

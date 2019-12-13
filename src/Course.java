@@ -31,21 +31,25 @@ public class Course implements Serializable {
     }
     public void GradeReportForSpecificAss(String AssignmentCode)
     {
-        for (String Key: this.registeredStudents.keySet()){
-            Student student = this.registeredStudents.get(Key);
-            student.courseAssignmentsReport(this.getCode(), AssignmentCode);
-
+        if(!this.registeredStudents.isEmpty()) {
+            for (String Key : this.registeredStudents.keySet()) {
+                this.registeredStudents.get(Key).courseAssignmentsReport(this.getCode(), AssignmentCode);
+            }
         }
+        else
+            System.out.println("there is no students registered in this course yet :(' ");
 
     }
-    public void ListSolutionsForSpecificAss(String assignmentCode)
+    public void listSolutionsForAllStudentsInThisAssignment(String assignmentCode)
     {
-        for (String Key: this.registeredStudents.keySet())
+        if(!registeredStudents.isEmpty())
         {
-            Student student = this.registeredStudents.get(Key);
-            student.getSolutions(this.getCode(), assignmentCode);
-
+        for (String Key: this.registeredStudents.keySet()) {
+            this.registeredStudents.get(Key).getSolutions(this.getCode(), assignmentCode);
+             }
         }
+        else
+            System.out.println("there is no students registered in this course yet :(' ");
     }
     public Assignment getAssignment(String assCode)
     {
@@ -70,9 +74,14 @@ public class Course implements Serializable {
     public void listAssignments()
     {
         int counter=0;
+        if(!assignments.isEmpty()){
         for (String key: assignments.keySet()){
             System.out.println("Assignment " + ++counter + " with code: " +key );
         }
+        System.out.println("--------------------------");
+        }
+        else
+            System.out.println("********this course have no assignments yet*********");
     }
     public void listAssignmentsForStudents()
     {
@@ -115,13 +124,28 @@ public class Course implements Serializable {
   }
     public void courseInfo()
     {
-    System.out.println("Course Name: "+ this.getName() +
+    System.out.println("\nCourse Name: "+ this.getName() +
             "  course Code: "+ this.getCode()+
-            "teaches by Dr: "+ this.DoctorName +
+            "  teaches by Dr: "+ this.DoctorName +
             "  Total number of Assignments: " + this.assignments.size());
+        System.out.println("-----------");
 
     }
 
+    public boolean thisCourseHasSolutionsInthisAss(String assCode)
+    {
+        boolean status=false;
+        for(String key: registeredStudents.keySet())
+        {
+            status|=registeredStudents.get(key).hasSolutionInThisAss(this.code, assCode);
+        }
+        return status;
+    }
+
+    public boolean hasStudents()
+    {
+        return !registeredStudents.isEmpty();
+    }
 
 
 }
